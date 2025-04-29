@@ -18,7 +18,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://frostpro.onrender.com/api',   // 🔥 Directly put your live link
+  baseURL: import.meta.env.VITE_API_BASE_URL,   // We'll set this in .env file
   withCredentials: true,
 });
 
