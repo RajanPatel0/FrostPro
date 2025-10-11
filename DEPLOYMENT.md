@@ -46,16 +46,7 @@
 
 5. **Add Environment Variables** (click "Advanced" → "Add Environment Variable"):
    ```
-   NODE_ENV=production
-   ACCESS_TOKEN_SECRET=letapnajar
-   REFRESH_TOKEN_SECRET=letapteejnar
-   GEMINI_API_KEY=AIzaSyBcH3RyylSkyKNVFyI6SHH5ODyvTWmwoxA
-   MONGO_URI=mongodb+srv://rajanpatelias:9bN1fxzUdFOG8g2S@cluster0.dm9xot2.mongodb.net/Rental_db?retryWrites=true&w=majority&appName=Cluster0
-   UPSTASH_REDIS_URL=redis://default:ASmoAAIncDIwNDQwMzA5ZTNhNTc0NTE3Yjc1MGI3NjcyNmU3ZTk4MXAyMTA2NjQ@saved-blowfish-10664.upstash.io:6379
-   CLOUDINARY_API_KEY=861278616167832
-   CLOUDINARY_API_SECRET=oXOZ1BihFVFqIReb5KNZQ39MB54
-   CLOUDINARY_CLOUD_NAME=dqwcmuau5
-   CLIENT_URL=https://your-app.vercel.app
+   .env keys there
    ```
 
 6. **Click "Create Web Service"**
