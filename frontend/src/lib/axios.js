@@ -18,7 +18,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,   // We'll set this in .env file
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://questify-backend-wt1s.onrender.com/api',
   withCredentials: true,
 });
 
