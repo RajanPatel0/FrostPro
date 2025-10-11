@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import axios from '../lib/axios';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom'; // Updated for React Router v6
 
@@ -16,7 +16,7 @@ const GoalSetupPage = () => {
     setError('');
 
     try {
-      const res =await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/generate-roadmap`, {
+      const res = await axios.post('/generate-roadmap', {
         goalText,
       });
       
