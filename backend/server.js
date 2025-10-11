@@ -29,9 +29,21 @@ if (!API_KEY) {
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // ✅ Apply CORS FIRST — before routes and JSON parsing
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.CLIENT_URL,
+  'https://your-app.vercel.app' // Update this after deploying to Vercel
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST'],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
@@ -52,8 +64,8 @@ app.post('/api/generate-roadmap', async (req, res) => {
       return res.status(400).json({ error: 'Goal text is required' });
     }
 
-    // Configure the model (using Gemini 1.5 Pro)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+    // Configure the model (using Gemini Pro)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
 
     // Prepare the prompt for Gemini
     const prompt = `

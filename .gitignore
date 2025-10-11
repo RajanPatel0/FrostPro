@@ -1,3 +1,9 @@
 node_modules
 
 .env
+frontend/.env.local
+frontend/.env
+
+# Test files
+test-gemini.js
+check-api-key.js
