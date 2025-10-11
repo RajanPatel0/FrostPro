@@ -7,3 +7,4 @@ frontend/.env
 # Test files
 test-gemini.js
 check-api-key.js
+‎DEPLOYMENT.md
