@@ -32,7 +32,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 const allowedOrigins = [
   'http://localhost:5173',
   process.env.CLIENT_URL,
-  'https://your-app.vercel.app' // Update this after deploying to Vercel
+  'https://frost-pro.vercel.app' // Update this after deploying to Vercel
 ];
 
 app.use(cors({
