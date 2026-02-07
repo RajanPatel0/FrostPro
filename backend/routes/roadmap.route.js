@@ -15,7 +15,7 @@ router.post('/generate-roadmap', async (req, res) => {
       return res.status(400).json({ error: 'Goal text is required' });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     const prompt = `
       Create a structured learning roadmap for the following goal: "${goalText}".
