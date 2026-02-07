@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/generate-roadmap", async (req, res) => {
   try {
     const { goalText } = req.body;
+
     if (!goalText) {
       return res.status(400).json({ error: "Goal text is required" });
     }
@@ -32,7 +33,7 @@ Return ONLY valid JSON in this format:
 `;
 
     const response = await axios.post(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent",
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         contents: [
           {
@@ -44,14 +45,13 @@ Return ONLY valid JSON in this format:
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
         },
         timeout: 20000,
       }
     );
 
     const rawText =
-      response.data.candidates?.[0]?.content?.parts?.[0]?.text;
+      response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!rawText) {
       throw new Error("Empty Gemini response");
@@ -63,7 +63,11 @@ Return ONLY valid JSON in this format:
     return res.json({ roadmap });
 
   } catch (err) {
-    console.error("Gemini REST error:", err.response?.data || err.message);
+    console.error(
+      "Gemini REST error:",
+      err.response?.data || err.message
+    );
+
     return res.status(500).json({
       error: "Failed to generate roadmap",
     });
