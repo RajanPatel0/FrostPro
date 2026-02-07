@@ -1,80 +1,61 @@
-import express from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import express from "express";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const router = express.Router();
 
-// Use the GEMINI_API_KEY from the environment
-const API_KEY = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(API_KEY);
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error("GEMINI_API_KEY is missing");
+}
 
-router.post('/generate-roadmap', async (req, res) => {
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+router.post("/generate-roadmap", async (req, res) => {
   try {
     const { goalText } = req.body;
 
     if (!goalText) {
-      return res.status(400).json({ error: 'Goal text is required' });
+      return res.status(400).json({ error: "Goal text is required" });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({
+      model: "models/gemini-1.0-pro",
+    });
 
     const prompt = `
-      Create a structured learning roadmap for the following goal: "${goalText}".
-      Format your response as a JSON object with the following structure:
-      {
-        "title": "Short title for the roadmap",
-        "description": "Brief description of the learning journey",
-        "nodes": [
-          {
-            "id": "1",
-            "title": "Topic title",
-            "description": "Brief description of what to learn",
-            "level": 1,
-            "status": "not-started",
-            "prerequisites": [],
-            "resources": [
-              { "title": "Resource name", "url": "Resource URL" }
-            ]
-          }
-        ]
-      }
-      Return ONLY the JSON without any additional text or markdown formatting.
-    `;
+Create a structured learning roadmap for the goal: "${goalText}"
+
+Return ONLY valid JSON in this format:
+{
+  "title": "Roadmap title",
+  "description": "Short description",
+  "nodes": [
+    {
+      "id": "1",
+      "title": "Topic",
+      "description": "What to learn",
+      "level": 1,
+      "status": "not-started",
+      "prerequisites": [],
+      "resources": []
+    }
+  ]
+}
+`;
 
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const rawText = response.text();
+    const rawText = result.response.text();
 
-    let roadmapData;
-    try {
-      let jsonText = rawText.replace(/```json|```/g, '').trim();
-      roadmapData = JSON.parse(jsonText);
+    const jsonText = rawText.replace(/```json|```/g, "").trim();
+    const roadmap = JSON.parse(jsonText);
 
-      if (!roadmapData.title || !roadmapData.nodes || !Array.isArray(roadmapData.nodes)) {
-        throw new Error('Invalid roadmap structure');
-      }
+    return res.json({ roadmap });
 
-      roadmapData.nodes.forEach(node => {
-        if (!node.id || !node.title || !node.level) {
-          throw new Error('Invalid node structure');
-        }
-        if (!node.status) node.status = 'not-started';
-        if (!node.resources) node.resources = [];
-      });
-
-      return res.json({ roadmap: roadmapData });
-
-    } catch (parseError) {
-      console.error('Failed to parse Gemini response:', parseError);
-      console.log('Raw response:', rawText);
-      return res.status(500).json({
-        error: 'Failed to parse the AI-generated roadmap',
-        rawResponse: rawText
-      });
-    }
-
-  } catch (error) {
-    console.error('Error generating roadmap:', error);
-    res.status(500).json({ error: 'Failed to generate roadmap' });
+  } catch (err) {
+    console.error("Gemini error:", err);
+    return res.status(500).json({
+      error: "Failed to generate roadmap",
+      details: err.message,
+    });
   }
 });
 
